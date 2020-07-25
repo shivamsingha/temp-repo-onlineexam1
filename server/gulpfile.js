@@ -1,4 +1,4 @@
-const { src, dest } = require('gulp');
+const { src, dest, series } = require('gulp');
 const ts = require('gulp-typescript');
 const nodemon = require('gulp-nodemon');
 
@@ -11,7 +11,7 @@ const build = () =>
     .pipe(src(['src/**', '!src/**/*.tsx', '!src/**/*.ts', '!src/**/*.js']))
     .pipe(dest('dist'));
 
-function start() {
+function nodemonTask() {
   nodemon({
     script: 'dist/index.js',
     tasks: ['build'],
@@ -20,6 +20,6 @@ function start() {
   });
 }
 
-exports.start = start;
+exports.start = series(build, nodemonTask);
 exports.build = build;
 exports.default = build;
