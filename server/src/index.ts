@@ -5,7 +5,8 @@ import bodyParser from 'body-parser';
 import helmet, { IHelmetConfiguration } from 'helmet';
 import cors, { CorsOptions } from 'cors';
 import morgan from 'morgan';
-import { Passport } from './utils';
+import { Passport, passportAuthenticateOptions } from './utils';
+import { login } from './routes';
 
 const csrfCookieOptions: CookieOptions = {
   httpOnly: true,
@@ -46,17 +47,18 @@ app.use(cors(corsOptions));
 app.use(morgan('combined'));
 
 app.get('/', csrfProtection, (req, res) => {
-  res.send({ 'CSRF-Token': req.csrfToken(), test: 1 });
+  res.send({ 'CSRF-Token': req.csrfToken() });
 });
 
 app.post(
   '/',
   csrfProtection,
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
+  passport.authenticate('jwt', passportAuthenticateOptions),
+  (_, res) => {
     res.send('ok');
   }
 );
+app.use('/login', csrfProtection, login);
 
 app.use(errorHandler);
 app.listen(3000, () => console.log(`Listening on port 3000`));

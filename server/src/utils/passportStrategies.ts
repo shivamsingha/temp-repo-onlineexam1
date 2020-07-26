@@ -22,10 +22,8 @@ class Passport {
       ? done(null, emailphone)
       : done(null, false);
 
-  JWTverify: JWTVerifyCallback = (payload, done) => {
-    console.log(payload);
-    return payload.userId ? done(null, payload.userId) : done(null, false);
-  };
+  JWTverify: JWTVerifyCallback = (payload, done) =>
+    payload.userId ? done(null, payload.userId) : done(null, false);
 
   usePassport = (): PassportStatic => {
     passport.use(this.LocalStrategy);
